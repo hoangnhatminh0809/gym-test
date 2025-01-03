@@ -8,6 +8,7 @@ import {
   BarChart3,
   Settings,
   BookUp,
+  Nut,
   LogOut,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,12 @@ interface SidebarProps {
 }
 
 const defaultNavItems: NavItem[] = [
+  {
+    icon: <Nut className="h-5 w-5" />,
+    label: "Users",
+    href: "/users",
+    isActive: false,
+  },
   {
     icon: <Users className="h-5 w-5" />,
     label: "Members",
@@ -60,8 +67,8 @@ const defaultNavItems: NavItem[] = [
   ,
   {
     icon: <BarChart3 className="h-5 w-5" />,
-    label: "Analytics",
-    href: "/analytics",
+    label: "Usage",
+    href: "/usages",
     isActive: false,
   },
 ];

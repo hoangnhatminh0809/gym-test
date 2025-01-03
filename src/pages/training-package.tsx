@@ -19,14 +19,14 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../components/ui/alert-dialog"
-import { parse } from "path"
 
 export interface TrainingPackage {
   id: number;
-  name: string;
+  name: string; 
   description: string;
   price: number;
 }
+
 
 const TrainingPackage = () => {
   const [packages, setPackages] = useState<TrainingPackage[]>([])
@@ -172,6 +172,19 @@ const TrainingPackage = () => {
                           value={editPackage.name || ''}
                           onChange={(e) => setEditPackage({ ...editPackage, name: e.target.value })}
                         />
+                        <Label>Description</Label>
+                        <Input
+                          placeholder="Description"
+                          value={editPackage.description || ''}
+                          onChange={(e) => setEditPackage({ ...editPackage, description: e.target.value })}
+                        />
+                        <Label>Price</Label>
+                        <Input
+                          type="number"
+                          placeholder="Price"
+                          value={editPackage.price.toString() || ''}
+                          onChange={(e) => setEditPackage({ ...editPackage, price: parseFloat(e.target.value) })}
+                        />
                       </div>
                     </div>
                     <AlertDialogFooter>
@@ -191,6 +204,7 @@ const TrainingPackage = () => {
                     <TableHead>ID</TableHead>
                     <TableHead>Name</TableHead>
                     <TableHead>Description</TableHead>
+                    <TableHead>Price</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -200,6 +214,7 @@ const TrainingPackage = () => {
                       <TableCell>{item.id}</TableCell>
                       <TableCell>{item.name}</TableCell>
                       <TableCell>{item.description}</TableCell>
+                      <TableCell>{item.price}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <Button variant="outline" size="icon" onClick={() => handleEditClick(item)}>

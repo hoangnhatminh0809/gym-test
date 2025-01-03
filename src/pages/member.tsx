@@ -29,11 +29,12 @@ export interface Membership {
   expiration_time: string;
 }
 
-export interface User {
-  id: number
+interface User {
+  id: number;
+  email: string;
+  first_name: string;
+  last_name: string;
   username: string;
-  age: number;
-  balance: number;
 }
 
 interface TrainingPackage {
@@ -99,11 +100,16 @@ const Member = () => {
     return response.data
   }
 
+  const fetchUsers = async () => {
+    const response = await api.get<User[]>(`/user/api/users/`)
+    return response.data
+  }
+
   useEffect(() => {
     fetchMemberships().then((data) => setMemberships(data))
-    console.log(memberships)
     fetchTrainingPackages().then((data) => setPackages(data))
     fetchTypes().then((data) => setTypes(data))
+    fetchUsers().then((data) => setUsers(data))
   }, [])
 
   const convertDateToDDMMYYYY = (dateString) => {
@@ -206,11 +212,22 @@ const Member = () => {
                     <div className="grid gap-4 py-4">
                       <div className="grid grid-cols-2 items-center gap-4">
                         <Label>Name</Label>
-                        <Input
-                          placeholder="Name"
-                          value={newMembership.user || ''}
-                          onChange={(e) => setNewMembership({ ...newMembership, user: parseInt(e.target.value) || 0 })}
-                        />
+                        <Select
+                          value={newMembership.user.toString()}
+                          onValueChange={(value) => {
+                          const selectedUser = users.find(u => u.id === parseInt(value));
+                          setNewMembership({ ...newMembership, user: selectedUser?.id || 0 });
+                          }}
+                        >
+                          <SelectTrigger>
+                          <SelectValue placeholder="Select User" />
+                          </SelectTrigger>
+                          <SelectContent>
+                          {users.map((user) => (
+                            <SelectItem key={user.id} value={user.id.toString()}>{user.username}</SelectItem>
+                          ))}
+                          </SelectContent>
+                        </Select>
                         <Label>Training Package</Label>
                         <Select
                           value={newMembership.package.toString()}
@@ -280,11 +297,22 @@ const Member = () => {
                     <div className="grid gap-4 py-4">
                       <div className="grid grid-cols-2 items-center gap-4">
                         <Label>Name</Label>
-                        <Input
-                          placeholder="Name"
-                          value={getUserName(editMembership.user) || ''}
-                          onChange={(e) => setEditMembership({ ...editMembership, user: parseInt(e.target.value) || 0 })}
-                        />
+                        <Select
+                          value={editMembership.user.toString()}
+                          onValueChange={(value) => {
+                          const selectedUser = users.find(u => u.id === parseInt(value));
+                          setEditMembership({ ...editMembership, user: selectedUser?.id || 0 });
+                          }}
+                        >
+                          <SelectTrigger>
+                          <SelectValue placeholder="Select User" />
+                          </SelectTrigger>
+                          <SelectContent>
+                          {users.map((user) => (
+                            <SelectItem key={user.id} value={user.id.toString()}>{user.username}</SelectItem>
+                          ))}
+                          </SelectContent>
+                        </Select>
                         <Label>Training Package</Label>
                         <Select
                           value={editMembership.package.toString()}
@@ -298,6 +326,23 @@ const Member = () => {
                           </SelectTrigger>
                           <SelectContent>
                             {packages.map((item) => (
+                              <SelectItem key={item.id} value={item.id.toString()}>{item.name}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <Label>Type Package</Label>
+                        <Select
+                          value={editMembership.type.toString()}
+                          onValueChange={(value) => {
+                            const selectedType = types.find(p => p.id === parseInt(value));
+                            setEditMembership({ ...editMembership, type: parseInt(value) });
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Type Package" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {types.map((item) => (
                               <SelectItem key={item.id} value={item.id.toString()}>{item.name}</SelectItem>
                             ))}
                           </SelectContent>
@@ -323,7 +368,7 @@ const Member = () => {
                         Cancel
                       </AlertDialogCancel>
                       <AlertDialogAction onClick={handleEdit}>
-                        Edit Equipment
+                        Edit Member
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
@@ -343,7 +388,7 @@ const Member = () => {
                 <TableBody>
                   {memberships.map((membership) => (
                     <TableRow key={membership.id}>
-                      <TableCell>{membership.user}</TableCell>
+                      <TableCell>{getUserName(membership.user)}</TableCell>
                       <TableCell>
                         {packages.find(p => p.id === membership.package)?.name || 'Unknown Package'}
                       </TableCell>

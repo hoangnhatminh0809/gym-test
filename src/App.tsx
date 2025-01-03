@@ -6,11 +6,12 @@ import Member from "./pages/member";
 import Equipment from "./pages/equipment";
 import Room from "./pages/room";
 import TrainingPackage from "./pages/training-package";
-import Analystic from "./pages/analystic";
+import Usage from "./pages/usage";
 import Login from "./pages/login";
 import { AuthProvider } from "./services/AuthContext";
 import RequireAuth from "./services/RequireAuth";
 import TypePackage from "./pages/type-package";
+import User from "./pages/user";
 
 function App() {
   return (
@@ -22,6 +23,14 @@ function App() {
           element={
             <RequireAuth>
               <Home />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/users"
+          element={
+            <RequireAuth>
+              <User />
             </RequireAuth>
           }
         />
@@ -67,10 +76,10 @@ function App() {
           }
         />
         <Route
-          path="/analytics"
+          path="/usages"
           element={
             <RequireAuth>
-              <Analystic />
+              <Usage />
             </RequireAuth>
           }
         />

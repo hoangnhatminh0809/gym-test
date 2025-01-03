@@ -326,8 +326,11 @@ const Equipment = () => {
                     <TableHead>Name</TableHead>
                     <TableHead>Room</TableHead>
                     <TableHead>Quantity</TableHead>
-                    <TableHead>Status</TableHead>
+                    <TableHead>Import Date</TableHead>
+                    <TableHead>Warranty Date</TableHead>
                     <TableHead>Origin</TableHead>
+                    <TableHead>Last Check</TableHead>
+                    <TableHead>Status</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -338,7 +341,10 @@ const Equipment = () => {
                       <TableCell>{item.name}</TableCell>
                       <TableCell>{getRoomName(item.room)}</TableCell>
                       <TableCell>{item.quantity}</TableCell>
+                      <TableCell>{item.import_date}</TableCell>
+                      <TableCell>{item.warranty_date}</TableCell>
                       <TableCell>{item.origin}</TableCell>
+                      <TableCell>{item.last_check}</TableCell>
                       <TableCell>{item.status}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
