@@ -7,6 +7,7 @@ import {
   Calendar,
   BarChart3,
   Settings,
+  BookUp,
   LogOut,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -50,6 +51,13 @@ const defaultNavItems: NavItem[] = [
     href: "/training-packages",
     isActive: false,
   },
+  {
+    icon: <BookUp className="h-5 w-5" />,
+    label: "Type Package",
+    href: "/type-packages",
+    isActive: false,
+  }
+  ,
   {
     icon: <BarChart3 className="h-5 w-5" />,
     label: "Analytics",

@@ -10,6 +10,7 @@ import Analystic from "./pages/analystic";
 import Login from "./pages/login";
 import { AuthProvider } from "./services/AuthContext";
 import RequireAuth from "./services/RequireAuth";
+import TypePackage from "./pages/type-package";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
             </RequireAuth>
           }
         />
+        
         <Route
           path="/rooms"
           element={
@@ -53,6 +55,14 @@ function App() {
           element={
             <RequireAuth>
               <TrainingPackage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/type-packages"
+          element={
+            <RequireAuth>
+              <TypePackage />
             </RequireAuth>
           }
         />

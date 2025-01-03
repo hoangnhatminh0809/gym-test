@@ -190,6 +190,7 @@ const TrainingPackage = () => {
                   <TableRow>
                     <TableHead>ID</TableHead>
                     <TableHead>Name</TableHead>
+                    <TableHead>Description</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -198,6 +199,7 @@ const TrainingPackage = () => {
                     <TableRow key={item.id}>
                       <TableCell>{item.id}</TableCell>
                       <TableCell>{item.name}</TableCell>
+                      <TableCell>{item.description}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <Button variant="outline" size="icon" onClick={() => handleEditClick(item)}>

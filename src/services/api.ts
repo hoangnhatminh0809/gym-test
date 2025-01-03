@@ -16,7 +16,7 @@ interface TokenResponse {
 
 // Axios instance
 const api = axios.create({
-    baseURL: "http://127.0.0.1:8000",
+    baseURL: "https://gym-system-taupe.vercel.app",
     headers: {
         "Content-Type": "application/json",
     },

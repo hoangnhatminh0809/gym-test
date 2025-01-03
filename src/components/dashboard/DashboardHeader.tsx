@@ -50,12 +50,12 @@ const DashboardHeader = ({
 
       <div className="flex items-center space-x-4">
         <Button variant="ghost" size="icon" className="relative">
-          <Bell className="h-5 w-5" />
+          {/* <Bell className="h-5 w-5" />
           {notificationCount > 0 && (
             <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-red-500 text-xs text-white flex items-center justify-center">
               {notificationCount}
             </span>
-          )}
+          )} */}
         </Button>
 
         <DropdownMenu>

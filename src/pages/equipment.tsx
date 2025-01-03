@@ -327,6 +327,7 @@ const Equipment = () => {
                     <TableHead>Room</TableHead>
                     <TableHead>Quantity</TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead>Origin</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -337,6 +338,7 @@ const Equipment = () => {
                       <TableCell>{item.name}</TableCell>
                       <TableCell>{getRoomName(item.room)}</TableCell>
                       <TableCell>{item.quantity}</TableCell>
+                      <TableCell>{item.origin}</TableCell>
                       <TableCell>{item.status}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">

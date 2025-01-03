@@ -19,23 +19,40 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../components/ui/alert-dialog"
-import { TrainingPackage } from "./training-package"
 
 export interface Membership {
   id: number;
-  user: User;
-  package: TrainingPackage;
+  user: number;
+  package: number;
+  type: number;
   registration_time: string;
   expiration_time: string;
 }
 
 export interface User {
-  id: number;
+  id: number
   username: string;
   age: number;
   balance: number;
 }
 
+interface TrainingPackage {
+  id?: number;
+  name: string;
+  description: string;
+  price: number;
+  created_at: Date;
+  updated_at: Date;
+}
+
+interface TypePackage {
+  id?: number;
+  name: string;
+  duration: string;
+  rate: number;
+  created_at: Date;
+  updated_at: Date;
+}
 // export interface TypePackage {
 //   id: number;
 //   name: string;
@@ -46,19 +63,22 @@ const Member = () => {
   const [memberships, setMemberships] = useState<Membership[]>([])
   const [users, setUsers] = useState<User[]>([])
   const [packages, setPackages] = useState<TrainingPackage[]>([])
+  const [types, setTypes] = useState<TypePackage[]>([])
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [newMembership, setNewMembership] = useState<Membership>({
     id: 0,
-    user: { id: 0, username: "", age: 0, balance: 0 },
-    package: { id: 0, name: "", description: "", price: 0 },
+    user: 0,
+    package: 0,
+    type: 0,
     registration_time: "",
     expiration_time: "",
   });
   const [editMembership, setEditMembership] = useState<Membership>({
     id: 0,
-    user: { id: 0, username: "", age: 0, balance: 0 },
-    package: { id: 0, name: "", description: "", price: 0 },
+    user: 0,
+    package: 0,
+    type: 0,
     registration_time: "",
     expiration_time: "",
   });
@@ -74,19 +94,45 @@ const Member = () => {
     return response.data
   }
 
+  const fetchTypes = async () => {
+    const response = await api.get<TypePackage[]>(`/membership/api/typepackages/`)
+    return response.data
+  }
+
   useEffect(() => {
     fetchMemberships().then((data) => setMemberships(data))
+    console.log(memberships)
     fetchTrainingPackages().then((data) => setPackages(data))
+    fetchTypes().then((data) => setTypes(data))
   }, [])
+
+  const convertDateToDDMMYYYY = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
+  const convertMembershipData = (membership) => {
+    return {
+      ...membership,
+      package: membership.package.id,
+      type: membership.type.id,
+      registration_time: convertDateToDDMMYYYY(membership.registration_time),
+      expiration_time: convertDateToDDMMYYYY(membership.expiration_time),
+    };
+  };
 
   const handleAdd = async () => {
     try {
       const response = await api.post<Membership>(`/membership/api/memberships/`, newMembership);
       setMemberships([...memberships, response.data]); // Add the new membership to the list
       setNewMembership({ // Reset the form
-        id:0,
+        id: 0,
         user: null,
         package: null,
+        type: null,
         registration_time: '',
         expiration_time: '',
       });
@@ -106,9 +152,10 @@ const Member = () => {
       const response = await api.put<Membership>(`/membership/api/memberships/${editMembership.id}/`, editMembership);
       setMemberships(memberships.map(m => m.id === editMembership.id ? response.data : m)); // Update the membership in the list
       setEditMembership({ // Reset the form
-        id:0,
+        id: 0,
         user: null,
         package: null,
+        type: null,
         registration_time: '',
         expiration_time: '',
       });
@@ -148,7 +195,7 @@ const Member = () => {
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-2 mb-4">
-              <AlertDialog open={isAddDialogOpen}>
+                <AlertDialog open={isAddDialogOpen}>
                   <AlertDialogTrigger asChild>
                     <Button onClick={() => setIsAddDialogOpen(true)}>Add Member</Button>
                   </AlertDialogTrigger>
@@ -161,22 +208,39 @@ const Member = () => {
                         <Label>Name</Label>
                         <Input
                           placeholder="Name"
-                          value={newMembership.user.username || ''}
-                          onChange={(e) => setNewMembership({ ...newMembership, user: { ...newMembership.user, username: e.target.value } })}
+                          value={newMembership.user || ''}
+                          onChange={(e) => setNewMembership({ ...newMembership, user: parseInt(e.target.value) || 0 })}
                         />
                         <Label>Training Package</Label>
                         <Select
-                          value={newMembership.package.id.toString()}
+                          value={newMembership.package.toString()}
                           onValueChange={(value) => {
                             const selectedPackage = packages.find(p => p.id === parseInt(value));
-                            setNewMembership({ ...newMembership, package: selectedPackage || newMembership.package });
+                            setNewMembership({ ...newMembership, package: selectedPackage?.id || 0 });
                           }}
                         >
                           <SelectTrigger>
-                            <SelectValue placeholder="Select Training Package"/>
+                            <SelectValue placeholder="Select Training Package" />
                           </SelectTrigger>
                           <SelectContent>
                             {packages.map((item) => (
+                              <SelectItem key={item.id} value={item.id.toString()}>{item.name}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <Label>Type Package</Label>
+                        <Select
+                          value={newMembership.type.toString()}
+                          onValueChange={(value) => {
+                            const selectedType = types.find(p => p.id === parseInt(value));
+                            setNewMembership({ ...newMembership, type: selectedType?.id || 0 });
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Type Package" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {types.map((item) => (
                               <SelectItem key={item.id} value={item.id.toString()}>{item.name}</SelectItem>
                             ))}
                           </SelectContent>
@@ -202,7 +266,7 @@ const Member = () => {
                         Cancel
                       </AlertDialogCancel>
                       <AlertDialogAction onClick={handleAdd}>
-                        Add Equipment
+                        Add Member
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
@@ -218,19 +282,19 @@ const Member = () => {
                         <Label>Name</Label>
                         <Input
                           placeholder="Name"
-                          value={editMembership.user.username || ''}
-                          onChange={(e) => setEditMembership({ ...editMembership, user: { ...editMembership.user, username: e.target.value } })}
+                          value={getUserName(editMembership.user) || ''}
+                          onChange={(e) => setEditMembership({ ...editMembership, user: parseInt(e.target.value) || 0 })}
                         />
                         <Label>Training Package</Label>
                         <Select
-                          value={editMembership.package.id.toString()}
+                          value={editMembership.package.toString()}
                           onValueChange={(value) => {
                             const selectedPackage = packages.find(p => p.id === parseInt(value));
-                            setEditMembership({ ...editMembership, package: selectedPackage || editMembership.package });
+                            setEditMembership({ ...editMembership, package: parseInt(value) });
                           }}
                         >
                           <SelectTrigger>
-                            <SelectValue placeholder="Select Training Package"/>
+                            <SelectValue placeholder="Select Training Package" />
                           </SelectTrigger>
                           <SelectContent>
                             {packages.map((item) => (
@@ -269,7 +333,8 @@ const Member = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead>User</TableHead>
-                    <TableHead>Package</TableHead>
+                    <TableHead>Training Package</TableHead>
+                    <TableHead>Type Package</TableHead>
                     <TableHead>Registration Time</TableHead>
                     <TableHead>Expired Time</TableHead>
                     <TableHead>Action</TableHead>
@@ -278,14 +343,42 @@ const Member = () => {
                 <TableBody>
                   {memberships.map((membership) => (
                     <TableRow key={membership.id}>
-                      <TableCell>{membership.user.username}</TableCell>
-                      <TableCell>{membership.package.name}</TableCell>
-                      <TableCell>{membership.registration_time}</TableCell>
-                      <TableCell>{membership.expiration_time}</TableCell>
+                      <TableCell>{membership.user}</TableCell>
+                      <TableCell>
+                        {packages.find(p => p.id === membership.package)?.name || 'Unknown Package'}
+                      </TableCell>
+                      {/* <TableCell>{membership.type}</TableCell> */}
+                      <TableCell>
+                        {types.find(p => p.id === membership.type)?.name || 'Unknown Type'}
+                      </TableCell>
+                      <TableCell>{convertDateToDDMMYYYY(membership.registration_time)}</TableCell>
+                      <TableCell>{convertDateToDDMMYYYY(membership.expiration_time)}</TableCell>
                       <TableCell>
                         <div className="flex gap-2">
-                          <Button onClick={() => handleEditClick(membership)} variant="secondary">Edit</Button>
-                          <Button onClick={() => handleDeleteClick(membership.id)}>Delete</Button>
+                          <Button variant="outline" size="icon" onClick={() => handleEditClick(membership)} ><FilePenIcon className="h-4 w-4" /></Button>
+                          <AlertDialog open={membershipToDelete === membership.id}>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="outline" size="icon" onClick={() => handleDeleteClick(membership.id)}>
+                                <Trash2Icon className="h-4 w-4" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This action cannot be undone. This will permanently delete the equipment.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel onClick={() => setMembershipToDelete(null)}>
+                                  Cancel
+                                </AlertDialogCancel>
+                                <AlertDialogAction onClick={handleConfirmDelete}>
+                                  Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
                         </div>
                       </TableCell>
                     </TableRow>
