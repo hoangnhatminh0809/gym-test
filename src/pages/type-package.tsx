@@ -154,6 +154,7 @@ const TypePackage = () => {
                                                 <Label>Rate</Label>
                                                 <Input
                                                     type="number"
+                                                    step="0.01"
                                                     placeholder="Rate"
                                                     value={newType.rate.toString() || ''}
                                                     onChange={(e) => setNewType({ ...newType, rate: parseFloat(e.target.value) })}

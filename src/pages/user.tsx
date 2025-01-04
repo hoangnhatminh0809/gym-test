@@ -103,7 +103,7 @@ const User = () => {
         if (userToDelete) {
             await api.delete(`/user/api/users/${userToDelete}/`);
             setUsers(users.filter(u => u.id !== userToDelete)); // Remove the user from the list
-            setUserToDelete(null); // Close the dialog
+            setUserToDelete(null);
         }
     };
 

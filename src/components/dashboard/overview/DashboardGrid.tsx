@@ -3,6 +3,8 @@ import StatsCard from "./StatsCard";
 import ActivityFeed from "./ActivityFeed";
 import QuickActions from "./QuickActions";
 import { Users, DollarSign, Calendar, Dumbbell } from "lucide-react";
+import { useState, useEffect } from "react";
+import api from "@/services/api";
 
 interface DashboardGridProps {
   stats?: {
@@ -60,12 +62,12 @@ const DashboardGrid = ({ stats = defaultStats }: DashboardGridProps) => {
           />
         ))}
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
+      <div className="grid grid-cols-1 gap-6">
+        <div>
           <ActivityFeed />
         </div>
         <div>
-          <QuickActions />
+          {/* <QuickActions /> */}
         </div>
       </div>
     </div>

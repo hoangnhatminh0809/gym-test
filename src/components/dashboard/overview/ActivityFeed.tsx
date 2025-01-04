@@ -4,6 +4,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 
+import { useState, useEffect } from "react";
+import api from "@/services/api";
+
 type ActivityItem = {
   id: string;
   type: "member" | "training" | "resource" | "schedule";
@@ -66,40 +69,59 @@ const getActivityColor = (type: ActivityItem["type"]) => {
   return colors[type];
 };
 
+interface Feedbacks {
+  id: number;
+  message: string;
+  employee_id: number;
+  user_name: string;
+}
+
 const ActivityFeed = ({
   activities = defaultActivities,
 }: ActivityFeedProps) => {
+
+  const [feedbacks, setFeedbacks] = useState<Feedbacks[]>([]);
+
+  const fetchFeedbacks = async () => {
+    const response = await api.get("/user/api/feedbacks/");
+    setFeedbacks(response.data.reverse());
+  }
+
+  useEffect (() => {
+    fetchFeedbacks();
+    console.log(feedbacks);
+  }, []);
   return (
-    <Card className="w-full h-full bg-white">
+    <Card className="w-3/4 h-full bg-white">
       <CardHeader>
-        <CardTitle className="text-lg font-semibold">Recent Activity</CardTitle>
+        <CardTitle className="text-lg font-semibold">Recent Feedbacks</CardTitle>
       </CardHeader>
       <CardContent>
         <ScrollArea className="h-[320px] pr-4">
           <div className="space-y-4">
-            {activities.map((activity) => (
+            {feedbacks.map((feedback) => (
               <div
-                key={activity.id}
+                key={feedback.id}
                 className="flex items-start space-x-4 p-3 rounded-lg hover:bg-gray-50 transition-colors"
               >
-                <Avatar className="w-10 h-10">
+                {/* <Avatar className="w-10 h-10">
                   <img
                     src={activity.user.avatar}
                     alt={activity.user.name}
                     className="w-full h-full object-cover"
                   />
-                </Avatar>
+                </Avatar> */}
                 <div className="flex-1 space-y-1">
                   <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium">{activity.title}</p>
-                    <span className="text-xs text-gray-500">
+                    <p className="text-sm font-medium">{feedback.user_name}</p>
+                    {/* <span className="text-xs text-gray-500">
                       {activity.timestamp}
-                    </span>
+                    </span> */}
                   </div>
                   <p className="text-sm text-gray-600">
-                    {activity.description}
+                    {feedback.message}
                   </p>
-                  <div className="flex items-center space-x-2">
+                  {/* <div className="flex items-center space-x-2">
                     <Badge
                       variant="secondary"
                       className={getActivityColor(activity.type)}
@@ -107,9 +129,9 @@ const ActivityFeed = ({
                       {activity.type}
                     </Badge>
                     <span className="text-xs text-gray-500">
-                      {activity.user.name}
+                      {feedback.employee_id}
                     </span>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             ))}

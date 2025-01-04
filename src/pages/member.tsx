@@ -121,6 +121,7 @@ const Member = () => {
   };
 
   const convertMembershipData = (membership) => {
+
     return {
       ...membership,
       package: membership.package.id,
@@ -136,9 +137,9 @@ const Member = () => {
       setMemberships([...memberships, response.data]); // Add the new membership to the list
       setNewMembership({ // Reset the form
         id: 0,
-        user: null,
-        package: null,
-        type: null,
+        user: 0,
+        package: 0,
+        type: 0,
         registration_time: '',
         expiration_time: '',
       });
@@ -159,9 +160,9 @@ const Member = () => {
       setMemberships(memberships.map(m => m.id === editMembership.id ? response.data : m)); // Update the membership in the list
       setEditMembership({ // Reset the form
         id: 0,
-        user: null,
-        package: null,
-        type: null,
+        user: 0,
+        package: 0,
+        type: 0,
         registration_time: '',
         expiration_time: '',
       });
